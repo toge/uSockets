@@ -520,7 +520,7 @@ void us_internal_ssl_socket_shutdown(struct us_internal_ssl_socket_t *s) {
 }
 
 struct us_internal_ssl_socket_t *us_internal_ssl_socket_close(struct us_internal_ssl_socket_t *s) {
-    return (struct us_internal_ssl_socket_t *) us_socket_close(0, (struct us_socket_t *) s);
+    return (struct us_internal_ssl_socket_t *) us_socket_close(0, (struct us_socket_t *) s, NULL);
 }
 
 struct us_internal_ssl_socket_t *us_internal_ssl_socket_context_adopt_socket(struct us_internal_ssl_socket_context_t *context, struct us_internal_ssl_socket_t *s, int ext_size) {
