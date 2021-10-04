@@ -92,6 +92,10 @@ struct us_internal_ssl_socket_t *ssl_on_open(struct us_internal_ssl_socket_t *s,
     return (struct us_internal_ssl_socket_t *) context->on_open(s, is_client, ip, ip_length);
 }
 
+struct us_internal_ssl_socket_t *us_internal_ssl_socket_close(struct us_internal_ssl_socket_t *s) {
+    return (struct us_internal_ssl_socket_t *) us_socket_close(0, (struct us_socket_t *) s, 0, NULL);
+}
+
 struct us_internal_ssl_socket_t *ssl_on_close(struct us_internal_ssl_socket_t *s) {
     struct us_internal_ssl_socket_context_t *context = (struct us_internal_ssl_socket_context_t *) us_socket_context(0, &s->s);
 
@@ -517,10 +521,6 @@ void us_internal_ssl_socket_shutdown(struct us_internal_ssl_socket_t *s) {
             us_socket_shutdown(0, &s->s);
         }
     }
-}
-
-struct us_internal_ssl_socket_t *us_internal_ssl_socket_close(struct us_internal_ssl_socket_t *s) {
-    return (struct us_internal_ssl_socket_t *) us_socket_close(0, (struct us_socket_t *) s, 0, NULL);
 }
 
 struct us_internal_ssl_socket_t *us_internal_ssl_socket_context_adopt_socket(struct us_internal_ssl_socket_context_t *context, struct us_internal_ssl_socket_t *s, int ext_size) {
