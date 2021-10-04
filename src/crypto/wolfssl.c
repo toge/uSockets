@@ -420,11 +420,18 @@ void us_internal_ssl_socket_context_on_end(struct us_internal_ssl_socket_context
     us_socket_context_on_end(0, (struct us_socket_context_t *) context, (struct us_socket_t *(*)(struct us_socket_t *)) ssl_on_end);
 }
 
+void us_internal_ssl_socket_context_on_connect_error(struct us_internal_ssl_socket_context_t *context, struct us_internal_ssl_socket_t *(*on_connect_error)(struct us_internal_ssl_socket_t *, int code)) {
+    us_socket_context_on_connect_error(0, (struct us_socket_context_t *) context, (struct us_socket_t *(*)(struct us_socket_t *, int)) on_connect_error);
+}
+
 void *us_internal_ssl_socket_context_ext(struct us_internal_ssl_socket_context_t *context) {
     return context + 1;
 }
 
 /* Per socket functions */
+void *us_internal_ssl_socket_context_get_native_handle(struct us_internal_ssl_socket_context_t *context) {
+    return context->ssl_context;
+}
 
 int us_internal_ssl_socket_write(struct us_internal_ssl_socket_t *s, const char *data, int length, int msg_more) {
     if (us_socket_is_closed(0, &s->s) || us_internal_ssl_socket_is_shut_down(s)) {
