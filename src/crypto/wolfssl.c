@@ -535,4 +535,27 @@ struct us_internal_ssl_socket_t *us_internal_ssl_socket_context_adopt_socket(str
     return (struct us_internal_ssl_socket_t *) us_socket_context_adopt_socket(0, &context->sc, &s->s, sizeof(struct us_internal_ssl_socket_t) - sizeof(struct us_socket_t) + ext_size);
 }
 
+void *us_internal_ssl_socket_get_native_handle(struct us_internal_ssl_socket_t *s) {
+    return s->ssl;
+}
+
+/* Todo: return error on failure? */
+void us_internal_ssl_socket_context_add_server_name(struct us_internal_ssl_socket_context_t *context, const char *hostname_pattern, struct us_socket_context_options_t options) {
+
+    /* Try and construct an SSL_CTX from options */
+    SSL_CTX *ssl_context = create_ssl_context_from_options(options);
+
+    /* We do not want to hold any nullptr's in our SNI tree */
+    if (ssl_context) {
+        if (sni_add(context->sni, hostname_pattern, ssl_context)) {
+            /* If we already had that name, ignore */
+            free_ssl_context(ssl_context);
+        }
+    }
+}
+
+void us_internal_ssl_socket_context_on_server_name(struct us_internal_ssl_socket_context_t *context, void (*cb)(struct us_internal_ssl_socket_context_t *, const char *hostname)) {
+    context->on_server_name = cb;
+}
+
 #endif
